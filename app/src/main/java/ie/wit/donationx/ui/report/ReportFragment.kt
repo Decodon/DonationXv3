@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ie.wit.donationx.R
 import ie.wit.donationx.adapters.DonationAdapter
+import ie.wit.donationx.adapters.DonationClickListener
 import ie.wit.donationx.databinding.FragmentReportBinding
 import ie.wit.donationx.main.DonationXApp
 import ie.wit.donationx.models.DonationModel
 
-class ReportFragment : Fragment() {
+class ReportFragment : Fragment(), DonationClickListener {
 
     lateinit var app: DonationXApp
     private var _fragBinding: FragmentReportBinding? = null
@@ -71,7 +72,7 @@ class ReportFragment : Fragment() {
     }
 
     private fun render(donationsList: List<DonationModel>) {
-        fragBinding.recyclerView.adapter = DonationAdapter(donationsList)
+        fragBinding.recyclerView.adapter = DonationAdapter(donationsList,this)
         if (donationsList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.donationsNotFound.visibility = View.VISIBLE
@@ -79,6 +80,11 @@ class ReportFragment : Fragment() {
             fragBinding.recyclerView.visibility = View.VISIBLE
             fragBinding.donationsNotFound.visibility = View.GONE
         }
+    }
+
+    override fun onDonationClick(donation: DonationModel) {
+        val action = ReportFragmentDirections.actionReportFragmentToDonationDetailFragment(donation.id)
+        findNavController().navigate(action)
     }
 
     override fun onResume() {
